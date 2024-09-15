@@ -56,25 +56,28 @@
       headers: {'X-Requested-With': 'XMLHttpRequest'}
     })
     .then(response => {
-      if( response.ok ) {
-        return response.text();
+      if (response.ok) {
+        return response.json(); // Expect JSON response instead of text
       } else {
-        throw new Error(`${response.status} ${response.statusText} ${response.url}`); 
+        throw new Error(`${response.status} ${response.statusText} ${response.url}`);
       }
     })
     .then(data => {
       thisForm.querySelector('.loading').classList.remove('d-block');
-      if (data.trim() == 'OK') {
+  
+      // Check for the valid "ok": true response
+      if (data.ok) {
         thisForm.querySelector('.sent-message').classList.add('d-block');
-        thisForm.reset(); 
+        thisForm.reset();
       } else {
-        throw new Error(data ? data : 'Form submission failed and no error message returned from: ' + action); 
+        throw new Error(data ? data : 'Form submission failed and no error message returned from: ' + action);
       }
     })
     .catch((error) => {
       displayError(thisForm, error);
     });
   }
+  
 
   function displayError(thisForm, error) {
     thisForm.querySelector('.loading').classList.remove('d-block');
